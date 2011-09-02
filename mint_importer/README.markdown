@@ -6,7 +6,9 @@ This software aims to enable users to import their previous history (more than 9
 # Usage
 
 Configure your username and password inside the file _login.yml_. After that, just type:
+
     ruby main.rb
+
 and the transactions found inside transactions.csv will be imported to Mint.com
 
 
