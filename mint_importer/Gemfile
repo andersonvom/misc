@@ -1,4 +1,5 @@
 source 'http://rubygems.org'
 
+# gem 'watir' # Windows IE only
 gem 'watir-webdriver'
 

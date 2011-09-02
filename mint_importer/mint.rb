@@ -9,7 +9,7 @@ class Mint
   # Creates a new Browser window and logs into Mint.com
   #  - login_info: { :username => 'user', :password => 'passwd' }
   def initialize( login_info )
-    @@config  = YAML.load_file("mint.yml")[:mint]
+    @@config  = YAML.load_file("mint.yml")[:mint] # TODO: load configurarion on class load and not for every new object
     @browser  = Watir::Browser.new
     @username = login_info[:username]
     @password = login_info[:password]

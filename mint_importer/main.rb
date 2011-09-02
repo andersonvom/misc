@@ -7,6 +7,7 @@ require 'mint.rb'
 login_info = YAML::load_file('login.yml')[:mint]
 mint = Mint.new login_info
 
+# Adapt the following section to adequate CSV format
 CSV_FILE='transactions.csv'
 CSV.foreach CSV_FILE do |row|
   transaction = {}
