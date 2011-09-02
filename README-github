@@ -1,6 +1,6 @@
 Global setup:
 
- Set up git
+  Set up git: http://help.github.com/set-up-git-redirect
   git config --global user.name "Author Name"
   git config --global user.email user@email.com
         
