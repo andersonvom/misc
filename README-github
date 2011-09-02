@@ -1,0 +1,36 @@
+Global setup:
+
+ Set up git
+  git config --global user.name "Author Name"
+  git config --global user.email user@email.com
+        
+
+Next steps:
+
+  mkdir misc
+  cd misc
+  git init
+  touch README
+  git add README
+  git commit -m 'first commit'
+  git remote add github git@github.com:andersonvom/misc.git
+  git push -u github master
+      
+
+Existing Git Repo?
+
+  cd existing_git_repo
+  git remote add github git@github.com:andersonvom/misc.git
+  git push -u github master
+      
+
+Importing a Subversion Repo?
+
+  https://github.com/andersonvom/misc/imports/new
+      
+
+When you're done:
+
+  https://github.com/andersonvom/misc
+
+
