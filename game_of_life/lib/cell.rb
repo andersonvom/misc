@@ -1,14 +1,18 @@
 class Cell
 
+  DEAD  = "-"
+  ALIVE = "*"
+
   attr_accessor :current_status, :next_status
 
   def initialize(status = nil)
     @next_status = nil
-    @current_status = status || ( rand * 1000 ).to_i % 2
+    init_status = ( rand * 1000 ).to_i % 2
+    @current_status = status || ((init_status==1) ? ALIVE : DEAD)
   end
 
   def alive?
-    current_status == 1
+    current_status == ALIVE
   end
 
   def tick(neighbors = [])
@@ -27,26 +31,27 @@ class Cell
     else
       flourish if live_neighbors == 3
     end
+
     self
   end
 
   def starve
-    @next_status = 0
+    @next_status = DEAD
     self
   end
 
   def overpopulate
-    @next_status = 0
+    @next_status = DEAD
     self
   end
 
   def flourish
-    @next_status = 1
+    @next_status = ALIVE
     self
   end
 
   def keep_alive
-    @next_status = 1
+    @next_status = ALIVE
     self
   end
 
@@ -54,6 +59,10 @@ class Cell
     @current_status = next_status
     @next_status = nil
     self
+  end
+
+  def to_s
+    @current_status.to_s
   end
 
 end

@@ -7,12 +7,15 @@ class Board
   def initialize(rows, columns)
     @rows = rows
     @columns = columns
-    @cells = Array.new( @rows, Array.new( @columns, nil ) )
     fill_cells
   end
 
   def fill_cells(cell = nil)
+    @cells = Array.new( @rows )
+
     @rows.times do |row|
+      @cells[row] = Array.new( @columns, nil )
+
       @columns.times do |col|
         @cells[row][col] = (cell && cell.dup) || Cell.new
       end
@@ -23,6 +26,11 @@ class Board
     @rows.times do |row|
       @columns.times do |col|
         @cells[row][col].tick neighbors(row, col)
+      end
+    end
+    @rows.times do |row|
+      @columns.times do |col|
+        @cells[row][col].update
       end
     end
   end
@@ -45,6 +53,17 @@ class Board
       end
     end
     live_cells
+  end
+
+  def to_s
+    string_board = ""
+    @rows.times do |row|
+      @columns.times do |col|
+        string_board += @cells[row][col].to_s
+      end
+      string_board += "\n"
+    end
+    string_board
   end
 
 end
