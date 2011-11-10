@@ -56,11 +56,16 @@ class Board
   end
 
   def run
-    while (true) do
-      tick
-      puts to_s
-      sleep 0.2
-      system "clear"
+    begin
+      while (true) do
+        tick
+        puts to_s
+        sleep 0.2
+        system "clear"
+      end
+    rescue Exception => e
+      puts
+      return
     end
   end
 
