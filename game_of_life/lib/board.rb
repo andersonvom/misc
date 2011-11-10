@@ -1,5 +1,3 @@
-require 'cell'
-
 class Board
 
   attr_accessor :rows, :columns, :cells
@@ -33,6 +31,8 @@ class Board
         @cells[row][col].update
       end
     end
+
+    self
   end
 
   def neighbors(row, col)
@@ -55,8 +55,17 @@ class Board
     live_cells
   end
 
+  def run
+    while (true) do
+      tick
+      puts to_s
+      sleep 0.2
+      system "clear"
+    end
+  end
+
   def to_s
-    string_board = ""
+    string_board = "\n"
     @rows.times do |row|
       @columns.times do |col|
         string_board += @cells[row][col].to_s

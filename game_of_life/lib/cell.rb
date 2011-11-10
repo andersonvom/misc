@@ -56,7 +56,7 @@ class Cell
   end
 
   def update
-    @current_status = next_status
+    @current_status = next_status if next_status
     @next_status = nil
     self
   end
