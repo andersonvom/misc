@@ -1,15 +1,20 @@
 function Cell()
 {
-	this.DEAD  = 0;
-	this.ALIVE = 1;
-
 	this.next_status = 0;
 	this.current_status = 0;
+
+	// Constants
+	this.DEAD   = 0;
+	this.ALIVE  = 1;
+	this.WIDTH  = 2;
+	this.HEIGHT = 2;
+	this.LIVE_COLOR  = "rgb(200,0,0)";
+	this.DEAD_COLOR  = "rgb(255,255,255)";
 
 	this.init = function(status)
 	{
 		var init_status = Math.round(Math.random()*1000) % 2;
-		this.current_status = (status) ? status : init_status;
+		this.current_status = (status != undefined) ? status : init_status;
 	}
 
 	this.is_alive = function()
@@ -79,9 +84,10 @@ function Cell()
 		return this;
 	}
 
-	this.draw = function()
+	this.draw = function(context, pos_x, pos_y)
 	{
-		// TODO: implement drawing on canvas
+		context.fillStyle = this.is_alive() ? this.LIVE_COLOR : this.DEAD_COLOR;
+		context.fillRect(pos_x, pos_y, this.WIDTH, this.HEIGHT);
 	}
 
 }
@@ -91,6 +97,8 @@ function Board()
 	this.rows = 0;
 	this.columns = 0;
 	this.cells = new Array();
+
+	this.PADDING = 1;
 
 	this.init = function(rows, columns)
 	{
@@ -155,22 +163,35 @@ function Board()
 		return live_cells;
 	}
 
-	this.run = function()
+	this.step = function(context)
 	{
-		this.draw();
+		this.draw(context);
 		this.tick();
-		setTimeout(this.run, 200);
+		this.run(context);
 	}
 
-	this.draw = function()
+	this.run = function(context)
 	{
-		// TODO: implement drawing on canvas
+		this.draw(context);
+		this.tick();
+		//setTimeout(this.run, 200); // TODO: fix this timeout
+	}
+
+	this.stop = function()
+	{
+		clearTimeout(this.run);
+	}
+
+	this.draw = function(context)
+	{
+		for (var row=0 ; row<this.rows ; row++) {
+			for (var col=0 ; col<this.columns ; col++) {
+				pos_x = row * (2 + this.PADDING);
+				pos_y = col * (2 + this.PADDING);
+				this.cells[row][col].draw(context, pos_x, pos_y);
+			}
+		}
 	}
 
 }
 
-var cell = new Cell();
-var board = new Board();
-board.init(15,15);
-board.tick();
-alert( 'end' );

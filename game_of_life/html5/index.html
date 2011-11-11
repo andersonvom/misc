@@ -7,18 +7,38 @@
       if (canvas.getContext) {
         var ctx = canvas.getContext("2d");
 
-        ctx.fillStyle = "rgb(200,0,0)";
-        ctx.fillRect (10, 10, 55, 50);
+        //ctx.fillStyle = "rgb(200,0,0)";
+        //ctx.fillRect (10, 10, 55, 50);
 
-        ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
-        ctx.fillRect (30, 30, 55, 50);
+        //ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
+        //ctx.fillRect (30, 30, 55, 50);
+
+		var canvas = document.getElementById("canvas");
+		//var cell = new Cell();
+		//cell.draw(ctx, 10, 10);
+		var board = new Board();
+		board.init(50,50);
+        board.fill_cells(0);
+		var live_cells = [new Cell(), new Cell(), new Cell(), new Cell(), new Cell()];
+		live_cells[0].init(1);
+		live_cells[1].init(1);
+		live_cells[2].init(1);
+		live_cells[3].init(1);
+		live_cells[4].init(1);
+        board.cells[0][1] = live_cells[0];
+        board.cells[1][2] = live_cells[1];
+        board.cells[2][0] = live_cells[2];
+        board.cells[2][1] = live_cells[3];
+        board.cells[2][2] = live_cells[4];
+		board.run(ctx);
       }
     }
-    var board = new Board(15,15);
   </script>
  </head>
  <body onload="draw();">
-   <div id="test"></div>
+   <a href="" onclick="board.run();">Play</a> | 
+   <a href="" onclick="board.stop();">Stop</a>
+   
    <canvas id="canvas" style="width: 100%; height: 100%; border: 1px solid #000;"></canvas>
  </body>
 </html>
