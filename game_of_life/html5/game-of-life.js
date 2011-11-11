@@ -6,9 +6,10 @@ function Cell()
 	// Constants
 	this.DEAD   = 0;
 	this.ALIVE  = 1;
-	this.WIDTH  = 2;
-	this.HEIGHT = 2;
-	this.LIVE_COLOR  = "rgb(200,0,0)";
+	this.WIDTH  = 5;
+	this.HEIGHT = 3;
+	this.LIVE_COLOR  = "rgb(255,0,0)";
+	this.OUTLINE_COLOR  = "rgb(240,240,240)";
 	this.DEAD_COLOR  = "rgb(255,255,255)";
 
 	this.init = function(status)
@@ -41,6 +42,15 @@ function Cell()
 	{
 		this.next_status = this.ALIVE;
 	}
+	
+	this.toggle = function()
+	{
+		if (this.current_status == this.ALIVE) this.next_status = this.DEAD;
+		else this.next_status = this.ALIVE;
+		this.update();
+		
+		return this;
+	}
 
 	this.update = function()
 	{
@@ -56,7 +66,7 @@ function Cell()
 		for (i in neighbors) {
 			if (neighbors[i].is_alive()) live_neighbors++;
 		}
-		
+
 		if (this.is_alive())
 		{
 			switch(live_neighbors)
@@ -86,6 +96,8 @@ function Cell()
 
 	this.draw = function(context, pos_x, pos_y)
 	{
+		context.strokeStyle = this.OUTLINE_COLOR;
+		context.strokeRect(pos_x, pos_y, this.WIDTH, this.HEIGHT);
 		context.fillStyle = this.is_alive() ? this.LIVE_COLOR : this.DEAD_COLOR;
 		context.fillRect(pos_x, pos_y, this.WIDTH, this.HEIGHT);
 	}
@@ -97,6 +109,7 @@ function Board()
 	this.rows = 0;
 	this.columns = 0;
 	this.cells = new Array();
+	this.runner = undefined;
 
 	this.PADDING = 1;
 
@@ -118,6 +131,12 @@ function Board()
 				this.cells[row][col] = new_cell; // TODO: add other types of filling
 			}
 		}
+	}
+	
+	this.toggle_cell = function(row, col)
+	{
+		this.cells[row][col].toggle();
+		return this;
 	}
 
 	this.tick = function()
@@ -165,29 +184,32 @@ function Board()
 
 	this.step = function(context)
 	{
-		this.draw(context);
 		this.tick();
-		this.run(context);
+		this.draw(context);
 	}
 
 	this.run = function(context)
 	{
+		var board = this;
 		this.draw(context);
 		this.tick();
-		//setTimeout(this.run, 200); // TODO: fix this timeout
+		if (this.runner == undefined)
+			this.runner = setInterval(function(){board.step(context);}, 200);
 	}
 
 	this.stop = function()
 	{
-		clearTimeout(this.run);
+		clearTimeout(this.runner);
+		this.runner = undefined;
 	}
 
 	this.draw = function(context)
 	{
+		context.clearRect(0, 0, this.rows*6, this.columns*4);
 		for (var row=0 ; row<this.rows ; row++) {
 			for (var col=0 ; col<this.columns ; col++) {
-				pos_x = row * (2 + this.PADDING);
-				pos_y = col * (2 + this.PADDING);
+				pos_x = row * (5 + this.PADDING);
+				pos_y = col * (3 + this.PADDING);
 				this.cells[row][col].draw(context, pos_x, pos_y);
 			}
 		}
@@ -195,3 +217,13 @@ function Board()
 
 }
 
+function toggle_cell(event, board, context, element_id)
+{
+	var pos_x = event.offsetX?(event.offsetX):event.pageX-document.getElementById(element_id).offsetLeft;
+	var pos_y = event.offsetY?(event.offsetY):event.pageY-document.getElementById(element_id).offsetTop;
+	
+	var row = Math.round(pos_x/(800/50));
+	var col = Math.round(pos_y/(800/37));
+	board.toggle_cell(row, col);
+	board.draw(context);
+}
