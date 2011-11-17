@@ -62,6 +62,7 @@ function Cell()
 
 	this.tick = function(neighbors)
 	{
+		var changed = false;
 		var live_neighbors = 0;
 		for (i in neighbors) {
 			if (neighbors[i].is_alive()) live_neighbors++;
@@ -73,6 +74,7 @@ function Cell()
 			{
 				case 0:
 				case 1:
+					changed = true;
 					this.starve();
 					break;
 
@@ -82,24 +84,36 @@ function Cell()
 					break;
 
 				default:
+					changed = true;
 					this.overpopulate();
 					break;
 			}
 		}
 		else
 		{
-			if (live_neighbors == 3) this.flourish();
+			if (live_neighbors == 3) {
+				changed = true;
+				this.flourish();
+			}
 		}
 
-		return this;
+		return changed;
 	}
 
 	this.draw = function(context, pos_x, pos_y)
 	{
-		context.strokeStyle = this.OUTLINE_COLOR;
-		context.strokeRect(pos_x, pos_y, this.WIDTH, this.HEIGHT);
-		context.fillStyle = this.is_alive() ? this.LIVE_COLOR : this.DEAD_COLOR;
-		context.fillRect(pos_x, pos_y, this.WIDTH, this.HEIGHT);
+		var pixel = context.createImageData(1, 1);
+		var pixelData = pixel.data;
+		if (this.is_alive()) {
+			pixelData[0] = 255;
+			pixelData[3] = 255;
+		}
+
+		for (var i=pos_x ; i<pos_x+this.WIDTH ; i++) {
+			for (var j=pos_y ; j<pos_y+this.HEIGHT ; j++) {
+				context.putImageData(pixel, i, j);
+			}
+		}
 	}
 
 }
@@ -141,11 +155,21 @@ function Board()
 
 	this.tick = function()
 	{
+		var changed = false;
+		var cell_status = false;
+
 		for (var row=0 ; row<this.rows ; row++) {
 			for (var col=0 ; col<this.columns ; col++) {
-				this.cells[row][col].tick( this.neighbors(row, col) );
+				cell_status = this.cells[row][col].tick( this.neighbors(row, col) );
+				changed = changed || cell_status;
 			}
 		}
+
+		if (!changed) {
+			this.stop();
+			return;
+		}
+
 		for (var row=0 ; row<this.rows ; row++) {
 			for (var col=0 ; col<this.columns ; col++) {
 				this.cells[row][col].update();
@@ -205,11 +229,13 @@ function Board()
 
 	this.draw = function(context)
 	{
-		context.clearRect(0, 0, this.rows*6, this.columns*4);
+		context.fillStyle = "FAFAFA";		// TODO: parameterize
+		context.fillRect (0, 0, 800, 800);	// TODO: get canvas size from canvas
+
 		for (var row=0 ; row<this.rows ; row++) {
 			for (var col=0 ; col<this.columns ; col++) {
-				pos_x = row * (5 + this.PADDING);
-				pos_y = col * (3 + this.PADDING);
+				pos_x = row * (5 + this.PADDING);	// TODO: parameterize
+				pos_y = col * (3 + this.PADDING);	// TODO: parameterize
 				this.cells[row][col].draw(context, pos_x, pos_y);
 			}
 		}
@@ -222,8 +248,11 @@ function toggle_cell(event, board, context, element_id)
 	var pos_x = event.offsetX?(event.offsetX):event.pageX-document.getElementById(element_id).offsetLeft;
 	var pos_y = event.offsetY?(event.offsetY):event.pageY-document.getElementById(element_id).offsetTop;
 	
-	var row = Math.round(pos_x/(800/50));
-	var col = Math.round(pos_y/(800/37));
+	var cell_width  = 16; //800 / (board.columns-1);	3 // TODO: parameterize
+	var cell_height = 21; //800 / (board.rows-1);		5 // TODO: parameterize
+	var row = Math.floor(pos_x/cell_width);
+	var col = Math.floor(pos_y/cell_height);
 	board.toggle_cell(row, col);
 	board.draw(context);
 }
+

@@ -1,6 +1,17 @@
 <html>
  <head>
   <script type="application/javascript" src="game-of-life.js"></script>
+ </head>
+ <body>
+	|
+   <a href="#" onclick="board.step(ctx); return false;">Step</a> |
+   <a href="#" onclick="board.run(ctx); return false;">Play</a> |
+   <a href="#" onclick="board.stop(); return false;">Stop</a> |
+   <a href="#" onclick="board.fill_cells(); board.draw(ctx); return false;">Random</a> |
+   <a href="#" onclick="board.fill_cells(0); board.draw(ctx); return false;">Clear</a> |
+   <br />
+   <canvas id="canvas" style="width: 800px; height: 800px; border: 1px solid #000;" onclick="toggle_cell(event, board, ctx, 'canvas');"></canvas>
+
   <script type="application/javascript">
 	var board;
 	var ctx;
@@ -14,15 +25,7 @@
 			board.draw(ctx);
 		}
 	}
+	draw();
   </script>
- </head>
- <body onload="draw();">
-	| 
-   <a href="#" onclick="board.run(ctx); return false;">Play</a> | 
-   <a href="#" onclick="board.stop(); return false;">Stop</a> | 
-   <a href="#" onclick="board.fill_cells(); board.draw(ctx); return false;">Random</a> | 
-   <a href="#" onclick="board.fill_cells(0); board.draw(ctx); return false;">Clear</a> | 
-   <br />
-   <canvas id="canvas" style="width: 800px; height: 800px; border: 1px solid #000;" onclick="toggle_cell(event, board, ctx, 'canvas');"></canvas>
  </body>
 </html>
