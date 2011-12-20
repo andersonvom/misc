@@ -2,58 +2,77 @@
 
 import math
 import random
+import time
 
+MATCHES = 1000
+LIST_TYPE = type([])
 
-def h(theta, x):
-	return sigmoid(z(theta,x))
+def h(theta, x, num):
+	return sigmoid(z(theta,x,num))
 
-def z(theta, x):
-	return sum(i*j for i, j in zip(theta,x))
+def z(theta, x, num):
+	total = 0
+	if (type(theta) == LIST_TYPE):
+		for i in range(num+1):
+			total += theta[i] * x[i]
+	else:
+		total += theta * x
+	return total
 
 def sigmoid(z):
 	return 1 / (1 + math.e ** (-z))
 
 
-def cost(theta, x, y):
-	return (1/2) * ((h(theta, x) - sum(i for i in y)) ** 2)
+def cost(theta, x, y, num):
+	total = 0
+	for i in range(num+1):
+		total += h(theta[i] * x[i] - y[i]) ** 2
+	return (1/2) * total
 
 
-def updateTheta(theta, x, y, alpha):
-	theta_temp = [0] * len(theta)
-	for i, item in enumerate(theta):
-		theta_temp[i] = theta[i] - alpha * (h(theta, x) - sum(i for i in y)) * x[i]
+def updateTheta(theta, x, y, alpha, num):
+	theta_temp = [0] * MATCHES
+	for i in range(MATCHES):
+		theta_temp[i] = theta[i] - alpha * (h(theta, x, num) - sum(y)) * x[i]
 	return theta_temp
-	# return theta
 
 
-matches = 10
 if input == "":
-	choices = ['R','P','S']
-	temp_list = [0] * matches
+	num = 0
+	choices = ['*','R','P','S'] # star only shifts everybody to ease index manipulation, it is not an actual choice
+	temp_list = [0] * MATCHES
 	X = list(temp_list)
 	Y = list(temp_list)
 	Theta = [ list(temp_list), list(temp_list), list(temp_list) ]
-	output = random.choice(choices)
-	X[-1] = choices.index(output) + 1
-	alpha = 0.1
+	output = random.choice(choices[1:4])
+	X[num] = choices.index(output)
+	alpha = 1
 else:
-	Y.pop(0)
-	Y.append(choices.index(input) + 1)
+	num += 1
+	Y[num] = choices.index(input)
 	for c in [1,2,3]:
+		idx = c-1
 		Y_i = map(lambda i: 1 if (i==c) else 0, Y)
-		Theta[c-1] = updateTheta(Theta[c-1], X, Y_i, alpha)
-	#print Theta
-	pred = list(X)
-	pred.pop(0)
-	pred.append(0)
+		Theta[idx] = updateTheta(Theta[idx], X, Y_i, alpha, num)
 	probabilities = [0,0,0]
+	ts = time.time()
 	for c in [1,2,3]:
-		pred[-1] = c # choices[c-1]
-		probabilities[c-1] = z(Theta[c-1], pred)
-	print probabilities
-	best_choice = probabilities.index(max(probabilities))
-	X.pop(0)
-	X.append(best_choice)
+		idx = c-1
+		X[num] = c
+		probabilities[idx] = z(Theta[idx], X, num)
+	te = time.time()
+	max_probability = probabilities.index(max(probabilities))
+	predicted_move = max_probability + 1
+	best_choice = (predicted_move % 3) + 1
+	X[num] = best_choice
 	output = choices[best_choice]
-print output
-input = random.choice('RPS')
+	# DEBUG
+	#print X
+	#print Y
+	#print Theta
+	#print probabilities
+	#print best_choice
+	
+	if  (num%50 == 0):
+		print (te-ts)
+		print "============="
