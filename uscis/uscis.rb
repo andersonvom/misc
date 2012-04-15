@@ -1,7 +1,10 @@
+#!/usr/bin/env ruby
+
 require 'nokogiri'
 require 'open-uri'
 
 # Reader for USCIS H1-B cap_count page to keep track of the number of approved/pending H1-B petitions
+# Add a daily call to this script to crontab so as to register cap_count changes to logfile
 class USCIS
   attr_accessor :page, :logfile, :logger
 
