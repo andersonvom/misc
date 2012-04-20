@@ -263,16 +263,3 @@ function Board()
 	}
 
 }
-
-function toggle_cell(event, board, context, element_id)
-{
-	var pos_x = event.offsetX?(event.offsetX):event.pageX-document.getElementById(element_id).offsetLeft;
-	var pos_y = event.offsetY?(event.offsetY):event.pageY-document.getElementById(element_id).offsetTop;
-	
-	var cell_width  = 16; //800 / (board.columns-1);	3 // TODO: parameterize
-	var cell_height = 21; //800 / (board.rows-1);		5 // TODO: parameterize
-	var row = Math.floor(pos_x/cell_width);
-	var col = Math.floor(pos_y/cell_height);
-	board.toggle_cell(row, col);
-	board.draw(context);
-}
