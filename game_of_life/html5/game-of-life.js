@@ -133,6 +133,11 @@ function Board()
 		this.columns = columns;
 		this.fill_cells();
 	}
+	
+	this.get_cells = function()
+	{
+		return this.cells;
+	}
 
 	this.fill_cells = function(status)
 	{
@@ -255,4 +260,3 @@ function toggle_cell(event, board, context, element_id)
 	board.toggle_cell(row, col);
 	board.draw(context);
 }
-
