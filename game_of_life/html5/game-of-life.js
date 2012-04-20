@@ -100,22 +100,6 @@ function Cell()
 		return changed;
 	}
 
-	this.draw = function(context, pos_x, pos_y)
-	{
-		var pixel = context.createImageData(1, 1);
-		var pixelData = pixel.data;
-		if (this.is_alive()) {
-			pixelData[0] = 255;
-			pixelData[3] = 255;
-		}
-
-		for (var i=pos_x ; i<pos_x+this.WIDTH ; i++) {
-			for (var j=pos_y ; j<pos_y+this.HEIGHT ; j++) {
-				context.putImageData(pixel, i, j);
-			}
-		}
-	}
-
 }
 
 function Board()
@@ -246,20 +230,6 @@ function Board()
 	{
 		clearTimeout(this.runner);
 		this.runner = undefined;
-	}
-
-	this.draw = function(context)
-	{
-		context.fillStyle = "FAFAFA";		// TODO: parameterize
-		context.fillRect (0, 0, 800, 800);	// TODO: get canvas size from canvas
-
-		for (var row=0 ; row<this.rows ; row++) {
-			for (var col=0 ; col<this.columns ; col++) {
-				pos_x = row * (5 + this.PADDING);	// TODO: parameterize
-				pos_y = col * (3 + this.PADDING);	// TODO: parameterize
-				this.cells[row][col].draw(context, pos_x, pos_y);
-			}
-		}
 	}
 
 }
