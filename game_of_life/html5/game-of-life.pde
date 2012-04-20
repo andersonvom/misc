@@ -55,12 +55,39 @@ void mouseDragged()
 	var x = (int)((mouseX - 1) / length);
 	var y = (int)((mouseY - 1) / length);
 	var cells = board.get_cells();
-	if (cells[mouse_start_x][mouse_start_y].is_alive()) {
+	if (!cells[mouse_start_x][mouse_start_y].is_alive()) {
 		if (!cells[x][y].is_alive())
 			board.toggle_cell(x,y);
 	}
 	else {
 		if (cells[x][y].is_alive())
 			board.toggle_cell(x,y);
+	}
+}
+
+void keyPressed()
+{
+	if (key == 'r') {
+		board.change_speed(0);
+		board.fill_cells();
+	}
+	else if (key == 'c') {
+		board.change_speed(0);
+		board.fill_cells(0);
+	}
+	else if (key == 's') {
+		board.stop();
+	}
+	else if (key == 'p') {
+		board.run();
+	}
+	else if (key == 't') {
+		board.step();
+	}
+	else if (key == '+') {
+		board.change_speed(0.2);
+	}
+	else if (key == '-') {
+		board.change_speed(-0.2);
 	}
 }
