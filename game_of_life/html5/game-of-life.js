@@ -124,6 +124,7 @@ function Board()
 	this.columns = 0;
 	this.cells = new Array();
 	this.runner = undefined;
+	this.speed = 200;
 
 	this.PADDING = 1;
 
@@ -211,19 +212,34 @@ function Board()
 		return live_cells;
 	}
 
-	this.step = function(context)
+	this.step = function()
 	{
 		this.tick();
-		this.draw(context);
 	}
 
-	this.run = function(context)
+	this.run = function()
 	{
 		var board = this;
-		this.draw(context);
 		this.tick();
 		if (this.runner == undefined)
-			this.runner = setInterval(function(){board.step(context);}, 200);
+			this.runner = setInterval(function(){board.step();}, this.speed);
+	}
+	
+	this.change_speed = function(value)
+	{
+		if (value == 0)
+			this.speed = 200;
+		else if (value < this.speed) {
+			// Invert values because the longer the timer, the slower the speed
+			value *= -1;
+			value += 1;
+			
+			this.speed = Math.ceil(this.speed * value);
+			if (this.runner != undefined) {
+				clearTimeout(this.runner);
+				this.runner = setInterval(function(){board.step();}, this.speed);
+			}
+		}
 	}
 
 	this.stop = function()
