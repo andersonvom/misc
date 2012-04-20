@@ -1,15 +1,18 @@
 <html>
  <head>
   <script src="processing.min.js" type="text/javascript"></script>
-  <script type="application/javascript" src="gol.js"></script>
+  <script type="application/javascript" src="game-of-life.js"></script>
+  <style>
+	span.shortcut { text-decoration: underline; font-weight: bold; }
+  </style>
  </head>
  <body>
 	|
-   <a href="#" id="step">Step</a> |
-   <a href="#" id="play">Play</a> |
-   <a href="#" id="stop">Stop</a> |
-   <a href="#" id="random">Random</a> |
-   <a href="#" id="clear" onclick="teste(); return false;">Clear</a> |
+   S<span class="shortcut">t</span>ep |
+   <span class="shortcut">P</span>lay |
+   <span class="shortcut">S</span>top |
+   <span class="shortcut">R</span>andom |
+   <span class="shortcut">C</span>lear |
    <br />
    <canvas data-processing-sources="game-of-life.pde"></canvas>
  </body>
