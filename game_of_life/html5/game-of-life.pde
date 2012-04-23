@@ -6,6 +6,7 @@ canvas_size = [ num_tiles[0]*(tile_width+spacing)+1.5*spacing, num_tiles[1]*(til
 background_color = 200;
 mouse_start_x = 0;
 mouse_start_y = 0;
+start_status = false;
 board = new Board();
 
 void setup()
@@ -48,6 +49,8 @@ void mousePressed()
 {
 	mouse_start_x = (int)((mouseX - 1) / length);
 	mouse_start_y = (int)((mouseY - 1) / length);
+	var cells = board.get_cells();
+	start_status = cells[mouse_start_x][mouse_start_y].is_alive()
 }
 
 void mouseDragged()
@@ -55,7 +58,7 @@ void mouseDragged()
 	var x = (int)((mouseX - 1) / length);
 	var y = (int)((mouseY - 1) / length);
 	var cells = board.get_cells();
-	if (!cells[mouse_start_x][mouse_start_y].is_alive()) {
+	if (!start_status) {
 		if (!cells[x][y].is_alive())
 			board.toggle_cell(x,y);
 	}
