@@ -6,11 +6,6 @@ function Cell()
 	// Constants
 	this.DEAD   = 0;
 	this.ALIVE  = 1;
-	this.WIDTH  = 5;
-	this.HEIGHT = 3;
-	this.LIVE_COLOR  = "rgb(255,0,0)";
-	this.OUTLINE_COLOR  = "rgb(240,240,240)";
-	this.DEAD_COLOR  = "rgb(255,255,255)";
 
 	this.init = function(status)
 	{
@@ -60,13 +55,9 @@ function Cell()
 		return this;
 	}
 
-	this.tick = function(neighbors)
+	this.tick = function(live_neighbors)
 	{
 		var changed = false;
-		var live_neighbors = 0;
-		for (i in neighbors) {
-			if (neighbors[i].is_alive()) live_neighbors++;
-		}
 
 		if (this.is_alive())
 		{
@@ -109,8 +100,7 @@ function Board()
 	this.cells = new Array();
 	this.runner = undefined;
 	this.speed = 200;
-
-	this.PADDING = 1;
+	this.changed_cells = [];
 
 	this.init = function(rows, columns)
 	{
@@ -123,6 +113,14 @@ function Board()
 	{
 		return this.cells;
 	}
+	
+	this.get_changed_cells = function(clear)
+	{
+		var cell_positions = this.changed_cells;
+		if (clear)
+			this.changed_cells = [];
+		return cell_positions;
+	}
 
 	this.fill_cells = function(status)
 	{
@@ -133,6 +131,7 @@ function Board()
 				var new_cell = new Cell();
 				new_cell.init(status);
 				this.cells[row][col] = new_cell; // TODO: add other types of filling
+				this.changed_cells.push([row,col]);
 			}
 		}
 	}
@@ -140,6 +139,7 @@ function Board()
 	this.toggle_cell = function(row, col)
 	{
 		this.cells[row][col].toggle();
+		this.changed_cells.push([row,col]);
 		return this;
 	}
 
@@ -151,6 +151,7 @@ function Board()
 		for (var row=0 ; row<this.rows ; row++) {
 			for (var col=0 ; col<this.columns ; col++) {
 				cell_status = this.cells[row][col].tick( this.neighbors(row, col) );
+				if (cell_status) this.changed_cells.push([row,col]);
 				changed = changed || cell_status;
 			}
 		}
@@ -169,20 +170,20 @@ function Board()
 
 	this.neighbors = function(row, col)
 	{
+		var live_neighbors = 0;
 		var min_row = (row-1<0) ? this.rows-1 : row-1;
 		var min_col = (col-1<0) ? this.columns-1 : col-1;
 
-		var neighbor_cells = new Array();
 		for (var i=0 ; i<3 ; i++) {
 			r = (min_row + i) % this.rows;
 			for (var j=0 ; j<3 ; j++) {
 				c = (min_col + j) % this.columns;
-				if ( (r!=row) || (c!=col) ) {
-					neighbor_cells.push( this.cells[r][c] );
+				if ( ((r!=row) || (c!=col)) && this.cells[r][c].is_alive() ) {
+					live_neighbors += 1;
 				}
 			}
 		}
-		return neighbor_cells;
+		return live_neighbors;
 	}
 
 	this.num_live_cells = function()
@@ -213,17 +214,19 @@ function Board()
 	{
 		if (value == 0)
 			this.speed = 200;
-		else if (value < this.speed) {
+		else {
 			// Invert values because the longer the timer, the slower the speed
 			value *= -1;
 			value += 1;
 			
 			this.speed = Math.ceil(this.speed * value);
+			if (this.speed < 25) this.speed = 25;
 			if (this.runner != undefined) {
 				clearTimeout(this.runner);
 				this.runner = setInterval(function(){board.step();}, this.speed);
 			}
 		}
+		return this.speed;
 	}
 
 	this.stop = function()

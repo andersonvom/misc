@@ -1,5 +1,5 @@
 spacing = 2;
-tile_width = 10;
+tile_width = 8;
 length = tile_width + spacing;
 num_tiles = [50, 50];
 canvas_size = [ num_tiles[0]*(tile_width+spacing)+1.5*spacing, num_tiles[1]*(tile_width+spacing)+1.5*spacing ];
@@ -19,23 +19,26 @@ void setup()
 	board.fill_cells(0);
 }
 
-void draw(){
-	background(background_color);
-	var cells = board.get_cells();
-	for (var i=0; i<num_tiles[0]; i++) {
-		for (var j=0; j<num_tiles[1]; j++) {
-			cell = cells[i][j];
-			if (cell.is_alive()) fill(255,0,0);
-			else fill(255);
-
-			rect(i*length+spacing, j*length+spacing, tile_width, tile_width);
-		}
+void draw()
+{
+	var changed_positions = board.get_changed_cells(true);
+	for (var i=0; i<changed_positions.length; i++) {
+		var pos = changed_positions[i];
+		draw_cell(pos[0], pos[1]);
 	}
+}
+
+void draw_cell(row, col)
+{
+	var cells = board.get_cells();
+	var cell = cells[row][col];
 	
-	fill(255,255,0);
-	var x = (int)((mouseX - 1) / length);
-	var y = (int)((mouseY - 1) / length);
-	rect(x*length+spacing, y*length+spacing, tile_width, tile_width);
+	if (cell.is_alive()) fill(255,0,0);
+	else fill(255);
+	
+	x_position = length*row + spacing;
+	y_position = length*col + spacing;
+	rect(x_position, y_position, tile_width, tile_width);
 }
 
 void mouseClicked()
