@@ -19,6 +19,13 @@ void setup()
 	board.fill_cells(0);
 }
 
+void reset_board(tiles_x, tiles_y)
+{
+  num_tiles = [tiles_x, tiles_y];
+  canvas_size = [ num_tiles[0]*(tile_width+spacing)+1.5*spacing, num_tiles[1]*(tile_width+spacing)+1.5*spacing ];
+  setup();
+}
+
 void draw()
 {
 	var changed_positions = board.get_changed_cells(true);
@@ -74,26 +81,32 @@ void mouseDragged()
 void keyPressed()
 {
 	if (key == 'r') {
-		board.change_speed(0);
-		board.fill_cells();
+		rand();
 	}
 	else if (key == 'c') {
-		board.change_speed(0);
-		board.fill_cells(0);
+		clear();
 	}
 	else if (key == 's') {
-		board.stop();
+		stop();
 	}
 	else if (key == 'p') {
-		board.run();
+		play();
 	}
 	else if (key == 't') {
-		board.step();
+		step();
 	}
 	else if (key == '+') {
-		board.change_speed(0.2);
+		speed(0.2);
 	}
 	else if (key == '-') {
-		board.change_speed(-0.2);
+		speed(-0.2);
 	}
 }
+
+void rand()  { board.change_speed(0); board.fill_cells(); }
+void clear() { board.change_speed(0); board.fill_cells(0); }
+void stop()  { board.stop(); }
+void play()  { board.run(); }
+void step()  { board.step(); }
+void speed(spd) { board.change_speed(spd); }
+
