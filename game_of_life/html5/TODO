@@ -1,0 +1,4 @@
+* replace state representation with 'b' and 'o'
+* switch rows and columns when drawing board (horizontal representation)
+* implement RLE encoding with standard representation
+* 
