@@ -3,10 +3,13 @@
   <script type="text/javascript" src="processing-1.3.6.min.js" ></script>
   <script type="text/javascript" src="game-of-life.js"></script>
   <script type="text/javascript" src="controls.js"></script>
+  <script type="text/javascript" src="rle.js"></script>
   <style>
     body { text-align: center; }
     span.shortcut { text-decoration: underline; font-weight: bold; }
   </style>
+  <link rel="icon" type="image/png" href="glider.png">
+  <title>Conway's Game of Life</title>
  </head>
  <body>
    <h1>Conway's Game of Life</h1>
@@ -18,7 +21,7 @@
    <button id="play"   onclick="play();">Play (P)</button>
    <button id="stop"   onclick="stop();">Stop (S)</button>
    <button id="random" onclick="rand();">Random (R)</button>
-   <button id="clear"  onclick="cls();">Clear (C)</button>
+   <button id="cls"    onclick="cls();">Clear (C)</button>
    <button id="speed_up" onclick="speed(0.2);">Faster (+)</button>
    <button id="speed_down" onclick="speed(-0.2);">Slower (-)</button>
    <br />
