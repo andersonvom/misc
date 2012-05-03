@@ -16,7 +16,11 @@ void setup()
 	stroke(background_color);
 	background(background_color);
 	board.init(num_tiles[0],num_tiles[1]);
-	board.fill_cells(0);
+	
+	if (window.location.hash)
+	  board.rle_decode(window.location.hash.substring(1));
+	else
+	  board.fill_cells(0);
 }
 
 void reset_board(tiles_x, tiles_y)
@@ -33,6 +37,7 @@ void draw()
 		var pos = changed_positions[i];
 		draw_cell(pos[0], pos[1]);
 	}
+	window.location.hash = board.rle_encode();
 }
 
 void draw_cell(row, col)

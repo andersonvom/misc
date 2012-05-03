@@ -235,4 +235,63 @@ function Board()
 		this.runner = undefined;
 	}
 
+	this.rle_encode = function()
+	{
+		var output = "";
+		var first_state = this.cells[0][0].is_alive();
+		var previous_state = first_state;
+		var current_state;
+		var current_count = 0;
+		
+		if (first_state) output = "1|";
+		else output = "0|";
+		
+		for (var row=0 ; row<this.rows ; row++) {
+			for (var col=0 ; col<this.columns ; col++) {
+				current_state = this.cells[row][col].is_alive();
+				if (current_state == previous_state) {
+					current_count += 1;
+				}
+				else {
+					output += current_count + '|';
+					current_count = 1;
+					previous_state = current_state;
+				}
+			}
+		}
+		output += current_count;
+		
+		return output;
+	}
+
+	this.rle_decode = function(str)
+	{
+		var counts = str.split('|');
+		var current_count = 0;
+		var cell_states = [];
+		
+		var first_state;
+		if (counts.shift() == "0") first_state = false;
+		else first_state = true;
+		
+		var current_state = first_state;
+		while (current_count = parseInt(counts.shift()))
+		{
+			for (var i=0; i<current_count; i++)
+				cell_states.push(current_state);
+				
+			current_state = !current_state;
+		}
+		
+		var cell_state;
+		for (var row=0 ; row<this.rows ; row++) {
+			for (var col=0 ; col<this.columns ; col++) {
+				current_state = cell_states.shift();
+				cell_state = this.cells[row][col].is_alive();
+				if (current_state != cell_state)
+					this.toggle_cell(row, col);
+			}
+		}
+	}
+	
 }
