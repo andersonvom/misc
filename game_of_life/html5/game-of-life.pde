@@ -33,11 +33,14 @@ void reset_board(tiles_x, tiles_y)
 void draw()
 {
 	var changed_positions = board.get_changed_cells(true);
-	for (var i=0; i<changed_positions.length; i++) {
-		var pos = changed_positions[i];
-		draw_cell(pos[0], pos[1]);
+	if (changed_positions.length > 0)
+	{
+	  for (var i=0; i<changed_positions.length; i++) {
+		  var pos = changed_positions[i];
+		  draw_cell(pos[0], pos[1]);
+	  }
+	  window.location.hash = board.rle_encode();
 	}
-	window.location.hash = board.rle_encode();
 }
 
 void draw_cell(row, col)
