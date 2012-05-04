@@ -65,10 +65,10 @@ void mouseClicked()
 
 void mousePressed()
 {
+  var cells = board.get_cells();
   mouse_start_row = (int)((mouseY - 1) / length);
   mouse_start_col = (int)((mouseX - 1) / length);
-  var cells = board.get_cells();
-  start_status = cells[mouse_start_col][mouse_start_row].is_alive()
+  start_status = cells[mouse_start_row][mouse_start_col].is_alive()
 }
 
 void mouseReleased()
