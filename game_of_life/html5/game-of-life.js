@@ -268,6 +268,9 @@ function Board()
         if (stream[i] == '!' || stream[i] == undefined) break last_char;
         var current_state = this.cells[row][col].state();
         if (current_state != stream[i]) this.toggle_cell(row, col);
+        
+        // End of Line symbol at the end of the line should be ignored
+        if (col == this.columns-1 && stream[i+1] == '$') i++;
       }
     }
   }
@@ -325,8 +328,6 @@ function Board()
     }
     
     var new_encoding = (new Array(shift_size[0])).join('$') + tmp_encoding.join('$');
-    
-    if (encoding == new_encoding) return;
     this.rle_decode(new_encoding);
   }
   
