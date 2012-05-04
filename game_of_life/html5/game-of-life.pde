@@ -1,8 +1,8 @@
-spacing = 2;
+spacing = 0;
 tile_width = 8;
 length = tile_width + spacing;
 num_tiles = [50, 50];
-canvas_size = [ num_tiles[0]*(tile_width+spacing)+1.5*spacing, num_tiles[1]*(tile_width+spacing)+1.5*spacing ];
+canvas_size = [ num_tiles[0]*length+spacing+1, num_tiles[1]*length+spacing+1 ];
 background_color = 200;
 mouse_start_col = 0;
 mouse_start_row = 0;
@@ -27,10 +27,10 @@ void decode_hash()
   board.rle_decode(getBoardEncoding());
 }
 
-void reset_board(tiles_x, tiles_y)
+void reset_board(columns, rows)
 {
-  num_tiles = [tiles_x, tiles_y];
-  canvas_size = [ num_tiles[0]*(tile_width+spacing)+1.5*spacing, num_tiles[1]*(tile_width+spacing)+1.5*spacing ];
+  num_tiles = [columns, rows];
+  canvas_size = [ num_tiles[0]*length+spacing+1, num_tiles[1]*length+spacing+1 ];
   setup();
 }
 

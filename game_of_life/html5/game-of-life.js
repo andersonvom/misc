@@ -111,7 +111,7 @@ function Board()
   this.speed = 200;
   this.changed_cells = [];
 
-  this.init = function(rows, columns)
+  this.init = function(columns, rows)
   {
     this.rows = rows;
     this.columns = columns;
