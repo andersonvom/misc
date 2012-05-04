@@ -325,12 +325,15 @@ function Board()
     }
     
     var new_encoding = (new Array(shift_size[0])).join('$') + tmp_encoding.join('$');
+    
+    if (encoding == new_encoding) return;
     this.rle_decode(new_encoding);
   }
   
   this.align_left = function(line, shift_size, spacing)
   {
     if (shift_size == 0) return line;
+    if (shift_size == spacing) return line;
   
     var new_encoding = line;
     var first_dead_run = line.match(/^[0-9]*b/);
