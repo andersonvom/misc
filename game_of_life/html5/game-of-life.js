@@ -6,13 +6,22 @@ function Cell()
 	// Constants
 	this.DEAD   = 0;
 	this.ALIVE  = 1;
+	
+	this.DEAD_SYMBOL = 'b';
+	this.ALIVE_SYMBOL = 'o';
 
 	this.init = function(status)
 	{
-		var init_status = Math.round(Math.random()*1000) % 2;
-		this.current_status = (status != undefined) ? status : init_status;
+		if (status == undefined) status = this.DEAD;
+		this.current_status = status;
 	}
 
+	this.state = function()
+	{
+		if (this.current_status == this.DEAD) return this.DEAD_SYMBOL;
+		else return this.ALIVE_SYMBOL;
+	}
+	
 	this.is_alive = function()
 	{
 		return (this.current_status == this.ALIVE);
@@ -237,61 +246,40 @@ function Board()
 
 	this.rle_encode = function()
 	{
-		var output = "";
-		var first_state = this.cells[0][0].is_alive();
-		var previous_state = first_state;
-		var current_state;
-		var current_count = 0;
-		
-		if (first_state) output = "1|";
-		else output = "0|";
-		
-		for (var row=0 ; row<this.rows ; row++) {
-			for (var col=0 ; col<this.columns ; col++) {
-				current_state = this.cells[row][col].is_alive();
-				if (current_state == previous_state) {
-					current_count += 1;
-				}
-				else {
-					output += current_count + '|';
-					current_count = 1;
-					previous_state = current_state;
-				}
-			}
-		}
-		output += current_count;
-		
-		return output;
+		var rle = new RLE();
+		return rle.encode( this.states() );
 	}
 
 	this.rle_decode = function(str)
 	{
-		var counts = str.split('|');
-		var current_count = 0;
-		var cell_states = [];
+		var rle = new RLE();
+		var stream = rle.decode( str );
 		
-		var first_state;
-		if (counts.shift() == "0") first_state = false;
-		else first_state = true;
-		
-		var current_state = first_state;
-		while (current_count = parseInt(counts.shift()))
-		{
-			for (var i=0; i<current_count; i++)
-				cell_states.push(current_state);
-				
-			current_state = !current_state;
-		}
-		
-		var cell_state;
+		var i = -1;
+		last_char:
 		for (var row=0 ; row<this.rows ; row++) {
+			end_line:
 			for (var col=0 ; col<this.columns ; col++) {
-				current_state = cell_states.shift();
-				cell_state = this.cells[row][col].is_alive();
-				if (current_state != cell_state)
-					this.toggle_cell(row, col);
+				i++;
+				if (stream[i] == '$') break end_line;
+				if (stream[i] == '!' || stream[i] == undefined) break last_char;
+				var current_state = this.cells[row][col].state();
+				if (current_state != stream[i]) this.toggle_cell(row, col);
 			}
 		}
 	}
 	
+	this.states = function()
+	{
+		var line = [];
+		var states = [];
+		for (var row=0 ; row<this.rows ; row++) {
+			line = [];
+			for (var col=0 ; col<this.columns ; col++) {
+				line.push( this.cells[row][col].state() );
+			}
+			states.push(line.join(''));
+		}
+		return states;
+	}
 }
