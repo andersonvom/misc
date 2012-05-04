@@ -252,6 +252,9 @@ function Board()
 
   this.rle_decode = function(str)
   {
+    this.fill_cells(0);
+    if (str == null || str == undefined || str == "") return;
+    
     var rle = new RLE();
     var stream = rle.decode( str );
     
@@ -322,7 +325,6 @@ function Board()
     }
     
     var new_encoding = (new Array(shift_size[0])).join('$') + tmp_encoding.join('$');
-    this.fill_cells(0);
     this.rle_decode(new_encoding);
   }
   
