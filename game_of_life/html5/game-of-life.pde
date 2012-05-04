@@ -17,10 +17,14 @@ void setup()
   background(background_color);
   board.init(num_tiles[0],num_tiles[1]);
   
-  if (window.location.hash)
-    board.rle_decode(getBoardEncoding());
-  else
-    board.fill_cells(0);
+  decode_hash();
+    
+  window.addEventListener("hashchange", decode_hash, false);
+}
+
+void decode_hash()
+{
+  board.rle_decode(getBoardEncoding());
 }
 
 void reset_board(tiles_x, tiles_y)
