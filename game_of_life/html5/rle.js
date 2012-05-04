@@ -76,7 +76,7 @@ function RLE()
       encoding.push( length + stream[i].charAt(0) );
     }
     
-    return encoding.join('');
+    return encoding.join('').replace(/\$+!/, '!');
   }
   
 }
