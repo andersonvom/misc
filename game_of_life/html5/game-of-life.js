@@ -18,8 +18,8 @@ function Cell()
 
   this.state = function()
   {
-    if (this.current_status == this.DEAD) return this.DEAD_SYMBOL;
-    else return this.ALIVE_SYMBOL;
+    if (this.is_alive()) return this.ALIVE_SYMBOL;
+    else return this.DEAD_SYMBOL;
   }
   
   this.is_alive = function()
@@ -282,4 +282,68 @@ function Board()
     }
     return states;
   }
+  
+  this.size = function()
+  {
+    var size = [0,0];
+    var upper_left_corner = [this.rows-1,this.columns-1];
+    var bottom_right_corner = [0,0];
+    
+    for (var row=0 ; row<this.rows ; row++) {
+      for (var col=0 ; col<this.columns ; col++) {
+        if (this.cells[row][col].is_alive()) {
+          if (row < upper_left_corner[0]) upper_left_corner[0] = row;
+          if (col < upper_left_corner[1]) upper_left_corner[1] = col;
+          
+          if (row > bottom_right_corner[0]) bottom_right_corner[0] = row;
+          if (col > bottom_right_corner[1]) bottom_right_corner[1] = col;
+        }
+      }
+    }
+    
+    size[0] = bottom_right_corner[0] - upper_left_corner[0] + 1;
+    size[1] = bottom_right_corner[1] - upper_left_corner[1] + 1;
+    return size.concat(upper_left_corner);
+  }
+  
+  this.center = function()
+  {
+    var size = this.size();
+    var spacing = [size[2], size[3]];
+    
+    var shift_size = [0,0];
+    shift_size[0] = Math.floor( (this.rows - size[0]) / 2 );
+    shift_size[1] = Math.floor( (this.columns - size[1]) / 2 );
+    
+    var encoding = this.rle_encode();
+    var tmp_encoding = encoding.replace(/^\$+/,'').split('$');
+    for (var i in tmp_encoding) {
+      tmp_encoding[i] = this.align_left(tmp_encoding[i], shift_size[1], spacing[1]);
+    }
+    
+    var new_encoding = (new Array(shift_size[0])).join('$') + tmp_encoding.join('$');
+    this.fill_cells(0);
+    this.rle_decode(new_encoding);
+  }
+  
+  this.align_left = function(line, shift_size, spacing)
+  {
+    if (shift_size == 0) return line;
+  
+    var new_encoding = line;
+    var first_dead_run = line.match(/^[0-9]*b/);
+    if (first_dead_run != null) first_dead_run = first_dead_run.pop();
+    else first_dead_run = "";
+    
+    if ( first_dead_run.length != 1 ) {
+      var tabs = 0;
+      var count = parseInt(first_dead_run);
+      if (count >= spacing) tabs = count - spacing;
+      if (tabs == 1) tabs = "";
+      new_encoding = line.replace(/^[0-9]*b/, tabs + "b");
+    }
+    
+    return shift_size + 'b' + new_encoding;
+  }
+  
 }

@@ -32,4 +32,7 @@ function size(x, y)
 {
   Processing.getInstanceById('game').reset_board(x, y);
 }
-
+function center()
+{
+  Processing.getInstanceById('game').center();
+}

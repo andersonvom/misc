@@ -137,4 +137,5 @@ void stop()  { board.stop(); updateURL(); }
 void play()  { board.run(); }
 void step()  { board.step(); updateURL(); }
 void speed(spd) { board.change_speed(spd); }
+void center()  { board.center(); updateURL(); }
 
