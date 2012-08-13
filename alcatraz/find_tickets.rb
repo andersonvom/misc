@@ -40,7 +40,7 @@ else
          to RECIPIENT
        from FROM
     subject SUBJECT
-       body available_tickets.join "\n"
+       body available_tickets.join("\n") + "\n" + url
   end
   puts ' DONE! \o/ '
 
