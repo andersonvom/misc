@@ -31,17 +31,18 @@ end
 
 # Send email with ticket information
 if available_tickets.empty?
-  puts "No tickets available for the week of #{date}"
+  puts "#{Time.now}: No tickets available for the week of #{date}"
 else
 
-  puts "Tickets found! Sending email..."
+  print "#{Time.now}: "
+  print "Tickets found! Sending email..."
   Mail.deliver do
          to RECIPIENT
        from FROM
     subject SUBJECT
-       body available_tickets.join "\n"
+       body available_tickets.join("\n") + "\n" + url
   end
-  puts 'DONE! \o/'
+  puts ' DONE! \o/ '
 
 end
 
