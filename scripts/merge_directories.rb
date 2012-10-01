@@ -15,30 +15,28 @@ module FSUtils
       self.origin = origin
       self.destination = destination
       self.files = []
-      info = `diff --ignore-file-name-case -qsr #{origin} #{destination}`.split "\n"
+      puts "Analyzing '#{origin}' and '#{destination}'..."
+      info = `diff --ignore-file-name-case -qsr "#{origin}" "#{destination}"`.split "\n"
       info.each do |item|
         file = {}
-        case item
-          when /^Only in #{origin}:/
-            file[:name] = item.match(/Only in [^:]+: (.*)/).captures.first
+        match_info = item.match /(Files (.*) and (.*) (are (identical)|(differ)))|(Only in #{origin}: (.*))/
+
+        if match_info
+          unless match_info[2].nil?
+            file[:name] = match_info[2]
+            file[:status] = (match_info[5] or match_info[6]).to_sym
+          else
+            file[:name] = match_info[8]
             file[:status] = :only_left
-          when /^Only in #{destination}:/
-            file[:name] = item.match(/Only in [^:]+: (.*)/).captures.first
-            file[:status] = :only_right
-          when /are identical$/
-            file[:name] = item.match(/Files (.*) and (.*) are identical/).captures.first
-            file[:status] = :identical
-          when /differ$/
-            file[:name] = item.match(/Files (.*) and (.*) differ/).captures.first
-            file[:status] = :differ
+          end
         end
-        self.files << file
+        self.files << file unless file.empty?
       end
     end
 
     def run
       identical.each { |file| `rm "#{file[:name]}"` }
-      only_left.each { |file| `mv "#{origin}/#{file[:name]}" #{destination}` }
+      only_left.each { |file| `mv "#{origin}/#{file[:name]}" "#{destination}"` }
       puts "#{different.count} files were left untouched because they are different:"
       puts different.collect { |file| file[:name] }.join ", "
     end
